@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # UIDAI Sandbox Credential Wallet
 
 A responsive Progressive Web App demonstrating a verifiable credential wallet for the UIDAI Innovation Sandbox frontend assignment. All identities and credentials are mock data.
@@ -96,3 +97,6 @@ src/
 ## Scope notes
 
 Authentication and credential issuance are represented as sandbox UI only and are outside the three requested coding prompts. Non-dashboard navigation and add/detail actions are demonstration placeholders.
+=======
+# uidai-credential-wallet
+>>>>>>> db0ce51b8d29688bfb8a19ac72b52aad84a7f939
