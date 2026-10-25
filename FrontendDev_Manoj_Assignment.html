@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Frontend Developer Assignment — Manoj</title>
+<style>
+@page { size: A4; margin: 18mm; }
+body { margin: 0; color: #172b4d; font: 11pt/1.5 "Segoe UI", Arial, sans-serif; }
+h1 { margin: 0; color: #8f1d2c; font-size: 25pt; }
+h2 { margin: 24px 0 8px; padding-bottom: 5px; color: #8f1d2c; border-bottom: 1px solid #d9dde5; font-size: 16pt; }
+h3 { margin: 15px 0 5px; break-after: avoid; font-size: 12pt; }
+h3 + ul { break-inside: avoid; }
+p, ul { margin: 5px 0 10px; }
+li { margin: 3px 0; }
+.subtitle { color: #52606d; font-size: 13pt; }
+.meta { margin: 18px 0; padding: 12px 16px; background: #f5f7fa; border-left: 4px solid #8f1d2c; }
+.code { padding: 10px 12px; background: #f5f7fa; border: 1px solid #d9dde5; border-radius: 4px; font: 9pt Consolas, monospace; white-space: pre-wrap; }
+.badge { display: inline-block; margin-right: 7px; padding: 3px 8px; color: #146c43; background: #e9f7ef; border-radius: 10px; font-size: 9pt; font-weight: 600; }
+.note { padding: 10px 12px; background: #fff7e6; border: 1px solid #f0ce83; }
+.break { break-before: page; }
+</style>
+</head>
+<body>
+<h1>Verifiable Credential Wallet PWA</h1>
+<p class="subtitle">Frontend Developer Assignment — UIDAI Innovation Vertical</p>
+<div class="meta"><strong>Candidate:</strong> Manoj<br><strong>Repository:</strong> To be added before submission<br><strong>Stack:</strong> React, TypeScript, Redux Toolkit, Vite, Vitest, React Testing Library</div>
+<p><span class="badge">Build passed</span><span class="badge">Lint passed</span><span class="badge">17 tests passed</span></p>
+<p>This submission implements a responsive sandbox credential wallet using mock identity data. It explicitly covers dashboard state management, secure reveal behavior, accessibility, offline credential retrieval, and automated security-timeout testing.</p>
+
+<h2>Part 1 — Dashboard and State Management</h2>
+<h3>Implementation</h3>
+<ul>
+<li>A responsive credential grid presents mock Aadhaar and eKYC credentials.</li>
+<li>Redux Toolkit stores credentials, request status, validation failures, and the last synchronization time.</li>
+<li>The application requests <strong>GET /api/credentials</strong> and validates every returned object at runtime before storing it.</li>
+<li>Dedicated loading, error, empty, and populated views ensure predictable behavior for every request state.</li>
+<li>The error view presents a retry action and a useful failure message.</li>
+</ul>
+<div class="code">Request lifecycle: idle → loading → succeeded | failed
+Success with []: empty-state panel
+Success with data: responsive credential grid
+Failure: alert panel with retry button</div>
+
+<h2>Part 2 — SecureDataMask and Accessibility</h2>
+<h3>Secure reveal lifecycle</h3>
+<ul>
+<li>The reusable component receives a sensitive string but renders a masked form by default.</li>
+<li>Activating “Tap to reveal” copies the value into temporary local component state.</li>
+<li>A timer clears that state and restores the mask after 10 seconds.</li>
+<li>“Hide now” immediately clears the revealed state, and unmounting clears any pending timer.</li>
+<li>Numeric 12-digit values use Aadhaar-style grouping; opaque alphanumeric identifiers remain unmodified while visible.</li>
+</ul>
+<h3>Accessibility</h3>
+<ul>
+<li>A native button provides keyboard operation and standard focus behavior.</li>
+<li><strong>aria-controls</strong> connects the control to the displayed value.</li>
+<li><strong>aria-pressed</strong> communicates reveal state.</li>
+<li>A polite live region announces reveal and hide changes.</li>
+<li>The dashboard includes semantic landmarks, a skip link, visible focus styles, reduced-motion support, and loading/error announcements.</li>
+</ul>
+
+<div class="break"></div>
+<h2>Part 3 — Offline Support and Automated Testing</h2>
+<h3>Service worker strategy</h3>
+<ul>
+<li>The production application registers a vanilla service worker.</li>
+<li><strong>GET /api/credentials</strong> uses a network-first strategy.</li>
+<li>Successful responses are cloned and fully written to Cache Storage before being returned.</li>
+<li>Network exceptions and unsuccessful HTTP responses fall back to the last cached credential list.</li>
+<li>If no cached response exists, the service worker returns an empty JSON list marked with an offline-fallback header.</li>
+<li>Same-origin application resources are cached as they are requested, with navigation fallback to the cached application shell.</li>
+</ul>
+<h3>Automated coverage</h3>
+<ul>
+<li>Default masking and absence of the full sensitive value</li>
+<li>Reveal followed by automatic masking after exactly 10 seconds</li>
+<li>Immediate manual hiding</li>
+<li>Keyboard activation and live-region announcement</li>
+<li>Timer cleanup when the component unmounts</li>
+<li>Dashboard loading, success, empty, HTTP failure, and malformed-payload states</li>
+<li>Exact API endpoint usage</li>
+<li>Service-worker network success, HTTP failure cache fallback, and no-cache offline fallback</li>
+</ul>
+<div class="code">npm test       3 test files, 17 tests passed
+npm run lint   0 warnings, 0 errors
+npm run build  TypeScript and Vite production build passed</div>
+
+<h2>Security and Scope</h2>
+<p class="note"><strong>Sandbox only:</strong> All credentials are mock data. Cache Storage demonstrates the assignment’s offline requirement and is not encrypted storage. Real identity data must not be entered.</p>
+<p>A production wallet would additionally require an approved threat model, strong authentication and authorization, encrypted local storage with secure key management, CSP and server-side security headers, dependency monitoring, and independent security and accessibility audits.</p>
+<p>Authentication, credential issuance, and secondary navigation are represented as sandbox UI and remain outside the three requested coding prompts.</p>
+
+<h2>Run and Verify</h2>
+<div class="code">npm install
+npm run dev
+npm test
+npm run lint
+npm run build</div>
+</body>
+</html>
